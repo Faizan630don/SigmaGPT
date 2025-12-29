@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { dummyUserData, dummyChats } from "../assets/assets";
+import { dummyChats } from "../assets/assets";
 import { AppContext } from "./AppContext";
-import Login from "../pages/Login";
+import axios from "axios";
 
-export const AppContextProvider = ({ children })=>{
+axios.defaults.baseURL = import.meta.env.VITE_SERVER_URL;
+export const AppContextProvider = ({ children }) => {
     const [user, setUser] = useState();
     const [chats, setChats] = useState(dummyChats);
     const [messages, setMessages] = useState([])
@@ -14,16 +15,16 @@ export const AppContextProvider = ({ children })=>{
     )
     const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
 
-    useEffect(()=>{
-        if(theme === "dark"){
-             document.documentElement.classList.add("dark");
+    useEffect(() => {
+        if (theme === "dark") {
+            document.documentElement.classList.add("dark");
         } else {
             document.documentElement.classList.remove("dark");
         }
         localStorage.setItem("theme", theme)
     }, [theme])
 
-    
+
 
 
     const value = {
