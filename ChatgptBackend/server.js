@@ -6,6 +6,7 @@ import userRoutes from './routes/userRoutes.js';
 import chatRouter from './routes/chatRoutes.js';
 import messageRouter from './routes/messageController.js';
 import creditRouter from './routes/creditRoutes.js';
+import { stripeWebhooks } from './controllers/webhooks.js';
 
 const app = express();
 

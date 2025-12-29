@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-import User from "../models/userModel.js";
+import User from "../models/User.js";
 import Transaction from "../models/Transaction.js";
 
 
