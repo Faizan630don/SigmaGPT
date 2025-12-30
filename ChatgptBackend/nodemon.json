@@ -1,0 +1,12 @@
+{
+    "ignore": [
+        "node_modules",
+        "test_imagekit.js",
+        "test_gen.js",
+        "logs.txt"
+    ],
+    "watch": [
+        "."
+    ],
+    "ext": "js,mjs,cjs,json"
+}

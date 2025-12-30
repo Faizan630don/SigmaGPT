@@ -130,17 +130,18 @@ export const getPublishedImages = async (req, res,) => {
                     "messages.isPublished": true
                 }
             },
+            { $sort: { "messages.timestamp": -1 } },
             {
                 $project: {
                     _id: 0,
                     imageUrl: "$messages.content",
-                    userName: "$userName",
-                    messages: 1
+                    prompt: "$messages.prompt",
+                    userName: { $ifNull: ["$userName", "Anonymous"] },
+                    timestamp: "$messages.timestamp"
                 }
             }
-
         ])
-        return res.json({ success: true, images: publishedImageMessages.reverse() })
+        return res.json({ success: true, images: publishedImageMessages })
     }
     catch (error) {
         return res.json({ success: false, message: error.message })

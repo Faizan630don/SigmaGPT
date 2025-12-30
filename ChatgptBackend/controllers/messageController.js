@@ -72,12 +72,12 @@ export const imageMessageController = async (req, res) => {
         const encodedPrompt = encodeURIComponent(prompt)
 
         //Construct ImageKit AI genration URL
-        const genratedImageUrl = `${process.env.IMAGEKIT_URL_ENDPOINT}/
-        ik-genimg-prompt-${encodedPrompt}/SigmaGpt/${Date.now()}.png?tr=w-800,h-800`;
+        const genratedImageUrl = `${process.env.IMAGEKIT_URL_ENDPOINT.replace(/\/$/, '')}/ik-genimg-prompt-${encodedPrompt}/SigmaGpt/${Date.now()}.png?tr=w-800,h-800`;
         //Trigger genr ny fething from Imagekit 
         const aiImageResponse = await axios.get(genratedImageUrl, { responseType: "arraybuffer" })
+
         //COnvert to base64
-        const base64Image = `data:image/png;base64,${Buffer.from(aiImageResponse.data, "binary").toString('base64')} `;
+        const base64Image = `data:image/png;base64,${Buffer.from(aiImageResponse.data, "binary").toString('base64')}`;
 
         const uploadResponse = await imagekit.upload({
             file: base64Image,
@@ -87,9 +87,10 @@ export const imageMessageController = async (req, res) => {
         const reply = {
             role: 'Assistant',
             content: uploadResponse.url,
+            prompt,
             timestamp: Date.now(),
             isImage: true,
-            isPublished
+            isPublished: isPublished === undefined ? true : isPublished
         }
         res.json({ success: true, reply })
 
