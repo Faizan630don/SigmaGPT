@@ -4,7 +4,8 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
-const backendUrl = import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
+// In production, the backend is serving the frontend from the exact same URL, so we can use relative paths ('').
+const backendUrl = import.meta.env.PROD ? "" : (import.meta.env.VITE_SERVER_URL || "http://localhost:3000");
 axios.defaults.baseURL = backendUrl;
 console.log("Backend URL:", backendUrl);
 export const AppContextProvider = ({ children }) => {
