@@ -42,7 +42,8 @@ app.use('/api/credit', creditRouter)
 // Serve Frontend
 app.use(express.static(path.join(__dirname, '../Chatgpt/dist')));
 
-app.get('*', (req, res) => {
+// Catch-all to serve index.html for React Router
+app.use((req, res) => {
     res.sendFile(path.join(__dirname, '../Chatgpt/dist/index.html'));
 });
 
