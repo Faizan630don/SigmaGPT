@@ -24,10 +24,11 @@ const Login = () => {
         localStorage.setItem('token', data.token)
         navigate('/')
       } else {
-        toast.error(data.message)
+        toast.error(data.message || "Something went wrong")
       }
     } catch (error) {
-      toast.error(error.message)
+      const errorMsg = error.response?.data?.message || error.message || "Network Error"
+      toast.error(errorMsg)
     }
   }
 

@@ -68,15 +68,28 @@ export const imageMessageController = async (req, res) => {
             isImage: false
         });
 
-        //ENcoded promnpt
-        const encodedPrompt = encodeURIComponent(prompt)
+        // Construct ImageKit AI generation URL
+        // Correct structure: endpoint/tr:ik-genimg-prompt-<prompt>/path/to/image.png
+        const formattedPrompt = prompt.trim().replace(/\s+/g, '-').toLowerCase();
+        const genratedImageUrl = `${process.env.IMAGEKIT_URL_ENDPOINT.replace(/\/$/, '')}/tr:ik-genimg-prompt-${formattedPrompt}/SigmaGpt/${Date.now()}.png?tr=w-800,h-800`;
 
-        //Construct ImageKit AI genration URL
-        const genratedImageUrl = `${process.env.IMAGEKIT_URL_ENDPOINT.replace(/\/$/, '')}/ik-genimg-prompt-${encodedPrompt}/SigmaGpt/${Date.now()}.png?tr=w-800,h-800`;
-        //Trigger genr ny fething from Imagekit 
-        const aiImageResponse = await axios.get(genratedImageUrl, { responseType: "arraybuffer" })
+        console.log("Attempting to generate image at URL:", genratedImageUrl);
 
-        //COnvert to base64
+        // Trigger gen by fetching from Imagekit 
+        let aiImageResponse;
+        try {
+            aiImageResponse = await axios.get(genratedImageUrl, { responseType: "arraybuffer" });
+        } catch (axiosError) {
+            console.error("Axios Error Fetching ImageKit AI Image:", {
+                status: axiosError.response?.status,
+                data: axiosError.response?.data?.toString(),
+                message: axiosError.message,
+                url: genratedImageUrl
+            });
+            throw new Error(`Failed to generate image: ImageKit returned ${axiosError.response?.status || axiosError.message}`);
+        }
+
+        // Convert to base64
         const base64Image = `data:image/png;base64,${Buffer.from(aiImageResponse.data, "binary").toString('base64')}`;
 
         const uploadResponse = await imagekit.upload({
@@ -102,6 +115,7 @@ export const imageMessageController = async (req, res) => {
 
 
     } catch (error) {
+        console.error("Image generation controller error:", error);
         res.json({ success: false, message: error.message })
     }
 }
