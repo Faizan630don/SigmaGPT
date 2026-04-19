@@ -7,6 +7,11 @@ import chatRouter from './routes/chatRoutes.js';
 import messageRouter from './routes/messageController.js';
 import creditRouter from './routes/creditRoutes.js';
 import { stripeWebhooks } from './controllers/webhooks.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -28,13 +33,18 @@ app.use(cors())
 app.use(express.json())
 
 //Routes
-app.get('/', (req, res) => {
-    res.send("Server is Running!")
-})
+
 app.use('/api/user', userRoutes);
 app.use('/api/chat', chatRouter);
 app.use('/api/message', messageRouter)
 app.use('/api/credit', creditRouter)
+
+// Serve Frontend
+app.use(express.static(path.join(__dirname, '../Chatgpt/dist')));
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../Chatgpt/dist/index.html'));
+});
 
 
 // Global error handler middleware

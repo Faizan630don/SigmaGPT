@@ -1,0 +1,9 @@
+{
+  "name": "sigmagpt-root",
+  "version": "1.0.0",
+  "scripts": {
+    "install-all": "cd Chatgpt && npm install && cd ../ChatgptBackend && npm install",
+    "build": "cd Chatgpt && npm run build",
+    "start": "cd ChatgptBackend && node server.js"
+  }
+}
